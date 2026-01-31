@@ -56,7 +56,7 @@ input.addEventListener("keydown", function(e) {
 })
 
 /* ---------------- COMPLETE / UNCOMPLETE ---------------- */
-ul.addEventListener("dblclick", function(e) {
+ul.addEventListener("click", function(e) {
   if(e.target.classList.contains("listClass")) {
     e.target.classList.add("completed");
     updateStorageFromDom();
@@ -88,6 +88,7 @@ window.addEventListener("load", function() {
   })
 
 });
+
 
 
 
