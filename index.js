@@ -1,7 +1,7 @@
+
 let input = document.querySelector(".taskInput");
 let btn = document.querySelector(".addBtn");
 let ul = document.querySelector(".taskList");
-
 
 /* ---------------- LOCAL STORAGE HELPERS ---------------- */
 function saveTask(tasks) {
@@ -15,11 +15,11 @@ function getTodo() {
 function updateStorageFromDom() {
   const tasks = [];
   document.querySelectorAll(".listClass").forEach(li => {
+    const span = li.querySelector("span");
     tasks.push({
-      text: li.childNodes[0].textContent,
+      text: span.textContent,
       completed: li.classList.contains("completed"),
     })
-    
   })
   saveTask(tasks);
 }
@@ -30,10 +30,12 @@ btn.addEventListener("click", function() {
   if(value === "") return;
 
   const li = document.createElement("li");
-  li.innerText = value;
   li.classList.add("listClass");
 
-   const dltBtn = document.createElement("button");
+  const span = document.createElement("span");
+  span.innerText = value;
+  
+  const dltBtn = document.createElement("button");
   dltBtn.innerText = "X";
   dltBtn.classList.add("dltClass");
 
@@ -42,6 +44,8 @@ btn.addEventListener("click", function() {
     li.remove();
     updateStorageFromDom();
   })
+  
+  li.appendChild(span);
   li.appendChild(dltBtn);
   ul.appendChild(li);
   input.value = "";
@@ -57,38 +61,44 @@ input.addEventListener("keydown", function(e) {
 
 /* ---------------- COMPLETE / UNCOMPLETE ---------------- */
 ul.addEventListener("click", function(e) {
-  if(e.target.classList.contains("listClass")) {
-    e.target.classList.add("completed");
-    updateStorageFromDom();
+  if(e.target.classList.contains("listClass") || e.target.closest(".listClass")) {
+    const li = e.target.classList.contains("listClass") ? e.target : e.target.closest(".listClass");
+    if(!e.target.classList.contains("dltClass")) {
+      li.classList.toggle("completed");
+      updateStorageFromDom();
+    }
   }
 })
 
 /* ---------------- LOAD TASKS ON PAGE LOAD ---------------- */
-
 window.addEventListener("load", function() {
   const tasks = getTodo();
   tasks.forEach(task => {
-        const li = document.createElement("li");
-  li.innerText = task.text;
-  li.classList.add("listClass");
-  if(task.completed) {
-    li.classList.add("completed");
-  }
-       const dltBtn = document.createElement("button");
-  dltBtn.innerText = "X";
-  dltBtn.classList.add("dltClass");
+    const li = document.createElement("li");
+    li.classList.add("listClass");
+    
+    const span = document.createElement("span");
+    span.innerText = task.text;
+    
+    if(task.completed) {
+      li.classList.add("completed");
+    }
+    
+    const dltBtn = document.createElement("button");
+    dltBtn.innerText = "X";
+    dltBtn.classList.add("dltClass");
 
-  dltBtn.addEventListener("click", function(e) {
-    e.stopPropagation();
-    li.remove();
-    updateStorageFromDom();
+    dltBtn.addEventListener("click", function(e) {
+      e.stopPropagation();
+      li.remove();
+      updateStorageFromDom();
+    })
+    
+    li.appendChild(span);
+    li.appendChild(dltBtn);
+    ul.appendChild(li);
   })
-  li.appendChild(dltBtn);
-  ul.appendChild(li);
-  })
-
 });
-
 
 
 
